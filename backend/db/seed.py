@@ -42,22 +42,84 @@ def seed_database(database: Database) -> None:
                 model = excluded.model
             """,
             [
-                ("VEH-1", "CUS-A", "ABC123", "Synthetic", "Demo vehicle A"),
-                ("VEH-2", "CUS-B", "XYZ908", "Synthetic", "Demo vehicle B"),
+                ("VEH-1", "CUS-A", "ABC123", "Porsche", "Taycan (synthetic)"),
+                ("VEH-2", "CUS-B", "XYZ908", "Porsche", "Macan (synthetic)"),
             ],
         )
 
         connection.executemany(
             """
-            INSERT INTO service_jobs (id, vehicle_id, appointment_at)
-            VALUES (?, ?, ?)
+            INSERT INTO service_jobs (
+                id, vehicle_id, appointment_at, current_stage,
+                current_owner_role, version, workflow_updated_at
+            ) VALUES (?, ?, ?, ?, ?, 1, ?)
             ON CONFLICT(id) DO UPDATE SET
                 vehicle_id = excluded.vehicle_id,
                 appointment_at = excluded.appointment_at
             """,
             [
-                ("JOB-1", "VEH-1", None),
-                ("JOB-2", "VEH-2", "Exercise Day 2, 10:00"),
+                ("JOB-1", "VEH-1", None, "QUALITY_CHECK_PENDING", "QUALITY_CONTROLLER", EXERCISE_TIME),
+                ("JOB-2", "VEH-2", "Exercise Day 2, 10:00", "BOOKING_CONFIRMED", "SERVICE_ADVISER", "2026-09-17T09:10:00+01:00"),
+            ],
+        )
+        connection.execute(
+            """
+            UPDATE service_jobs
+            SET current_stage = COALESCE(current_stage, 'QUALITY_CHECK_PENDING'),
+                current_owner_role = COALESCE(current_owner_role, 'QUALITY_CONTROLLER'),
+                workflow_updated_at = COALESCE(workflow_updated_at, ?)
+            WHERE id = 'JOB-1'
+            """,
+            (EXERCISE_TIME,),
+        )
+        connection.execute(
+            """
+            UPDATE service_jobs
+            SET current_stage = COALESCE(current_stage, 'BOOKING_CONFIRMED'),
+                current_owner_role = COALESCE(current_owner_role, 'SERVICE_ADVISER'),
+                workflow_updated_at = COALESCE(workflow_updated_at, ?)
+            WHERE id = 'JOB-2'
+            """,
+            ("2026-09-17T09:10:00+01:00",),
+        )
+
+        connection.executemany(
+            """
+            INSERT INTO workflow_stage_rules (
+                current_stage, action, required_role, next_stage, next_owner_role
+            ) VALUES (?, ?, ?, ?, ?)
+            ON CONFLICT(current_stage, action) DO UPDATE SET
+                required_role = excluded.required_role,
+                next_stage = excluded.next_stage,
+                next_owner_role = excluded.next_owner_role
+            """,
+            [
+                ("VEHICLE_RECEIVED", "START_DIAGNOSIS", "RECEPTION", "DIAGNOSIS", "TECHNICIAN"),
+                ("DIAGNOSIS", "START_REPAIR", "TECHNICIAN", "REPAIR_IN_PROGRESS", "TECHNICIAN"),
+                ("REPAIR_IN_PROGRESS", "FINISH_REPAIR", "TECHNICIAN", "QUALITY_CHECK_PENDING", "QUALITY_CONTROLLER"),
+                ("QUALITY_CHECK_PENDING", "COMPLETE_QUALITY_CHECK", "QUALITY_CONTROLLER", "READY_FOR_COLLECTION", "SERVICE_ADVISER"),
+                ("READY_FOR_COLLECTION", "CONFIRM_CUSTOMER_NOTIFIED", "SERVICE_ADVISER", "CUSTOMER_NOTIFIED", "SERVICE_ADVISER"),
+                ("CUSTOMER_NOTIFIED", "CONFIRM_COLLECTION", "SERVICE_ADVISER", "COLLECTED", "SERVICE_ADVISER"),
+            ],
+        )
+
+        connection.executemany(
+            """
+            INSERT INTO workflow_events (
+                job_id, previous_stage, new_stage, action, completed_by,
+                completed_by_role, previous_owner_role, next_owner_role,
+                notes, simulated, created_at
+            )
+            SELECT ?, NULL, ?, 'INITIALIZE_WORKFLOW', 'seed-system',
+                   'SYSTEM', NULL, ?, 'Synthetic exercise starting state', 0, ?
+            WHERE NOT EXISTS (
+                SELECT 1 FROM workflow_events
+                WHERE job_id = ? AND action = 'INITIALIZE_WORKFLOW'
+            )
+            """,
+            [
+                ("JOB-1", "QUALITY_CHECK_PENDING", "QUALITY_CONTROLLER", EXERCISE_TIME, "JOB-1"),
+                ("JOB-2", "BOOKING_CONFIRMED", "SERVICE_ADVISER", "2026-09-17T09:10:00+01:00", "JOB-2"),
             ],
         )
 
@@ -162,6 +224,7 @@ def seed_database(database: Database) -> None:
         )
 
         evidence_rows = [
+            ("DEC-1", "WORKFLOW_STATE", "JOB-1:AUTHORITATIVE_WORKFLOW:CURRENT_STAGE", "current_stage", "QUALITY_CHECK_PENDING", "2026-09-17T09:00:00+01:00"),
             ("DEC-1", "JOB_STATUS_EVENT", "JOB-1:WORKSHOP:WORK", "status_value", "FINISHED", "2026-09-17T09:00:00+01:00"),
             ("DEC-1", "JOB_STATUS_EVENT", "JOB-1:QUALITY_CONTROL:QUALITY_CHECK", "status_value", "PENDING", "2026-09-17T09:00:00+01:00"),
             ("DEC-1", "JOB_STATUS_EVENT", "JOB-1:CRM:COLLECTION", "status_value", "READY", "2026-09-17T09:00:00+01:00"),

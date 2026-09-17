@@ -4,6 +4,11 @@ The customer and manager applications share one SQLite database. The schema
 preserves source-specific job status events so conflicting workshop, quality
 control, and CRM records remain visible to the decision and review workflow.
 
+Each active service job also has one authoritative workflow stage and one
+assigned role. Allowed transitions are defined in `workflow_stage_rules`, while
+every completed handoff is appended to `workflow_events`. External source events
+remain unchanged for reconciliation and audit purposes.
+
 All included records are synthetic C01 exercise data.
 
 ## Run the API

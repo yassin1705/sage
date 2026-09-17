@@ -21,8 +21,39 @@ CREATE TABLE IF NOT EXISTS service_jobs (
     id TEXT PRIMARY KEY,
     vehicle_id TEXT NOT NULL REFERENCES vehicles(id),
     appointment_at TEXT,
+    current_stage TEXT,
+    current_owner_role TEXT,
+    version INTEGER NOT NULL DEFAULT 1,
+    workflow_updated_at TEXT,
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS workflow_stage_rules (
+    current_stage TEXT NOT NULL,
+    action TEXT NOT NULL,
+    required_role TEXT NOT NULL,
+    next_stage TEXT NOT NULL,
+    next_owner_role TEXT NOT NULL,
+    PRIMARY KEY (current_stage, action)
+);
+
+CREATE TABLE IF NOT EXISTS workflow_events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    job_id TEXT NOT NULL REFERENCES service_jobs(id),
+    previous_stage TEXT,
+    new_stage TEXT NOT NULL,
+    action TEXT NOT NULL,
+    completed_by TEXT NOT NULL,
+    completed_by_role TEXT NOT NULL,
+    previous_owner_role TEXT,
+    next_owner_role TEXT NOT NULL,
+    notes TEXT,
+    simulated INTEGER NOT NULL DEFAULT 0 CHECK(simulated IN (0, 1)),
+    created_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_workflow_events_job
+    ON workflow_events(job_id, created_at DESC);
 
 CREATE TABLE IF NOT EXISTS job_status_events (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

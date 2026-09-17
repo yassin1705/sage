@@ -18,6 +18,7 @@ def _resolve_project_path(value: str) -> Path:
 class GmailConfig:
     mode: str
     sender_name: str
+    demo_recipient_email: str
     credentials_file: Path
     token_file: Path
 
@@ -43,6 +44,7 @@ def load_gmail_config() -> GmailConfig:
     return GmailConfig(
         mode=mode,
         sender_name=data.get("sender_name", "SAGE Service Desk"),
+        demo_recipient_email=data.get("demo_recipient_email", "yasmokh18@gmail.com"),
         credentials_file=_resolve_project_path(data["credentials_file"]),
         token_file=_resolve_project_path(data["token_file"]),
     )

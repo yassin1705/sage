@@ -1,6 +1,7 @@
 {
   "mode": "simulation",
   "sender_name": "SAGE Service Desk",
+  "demo_recipient_email": "yasmokh18@gmail.com",
   "credentials_file": "backend/secrets/gmail-credentials.json",
   "token_file": "backend/secrets/gmail-token.json"
 }

@@ -2,8 +2,8 @@
 
 :root {
   font-family: 'DM Sans', system-ui, sans-serif;
-  color: #1d2a3a;
-  background: #eef3f8;
+  color: #101012;
+  background: #f2f2ef;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
@@ -15,6 +15,6 @@ html, body, #root { min-width: 320px; min-height: 100%; margin: 0; }
 button, textarea, input { font: inherit; }
 
 button:focus-visible, textarea:focus-visible, input:focus-visible {
-  outline: 3px solid rgba(28, 105, 212, 0.24);
+  outline: 3px solid rgba(213, 0, 28, 0.22);
   outline-offset: 2px;
 }

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="SAGE">
+  <rect width="512" height="512" rx="88" fill="#0d0d0f"/>
+  <path d="M122 152c0-35 28-63 63-63h205v68H198a13 13 0 0 0-13 13v31c0 7 6 13 13 13h116c42 0 76 34 76 76v70c0 35-28 63-63 63H122v-68h192c7 0 13-6 13-13v-34c0-7-6-13-13-13H198c-42 0-76-34-76-76v-67Z" fill="#fff"/>
+  <rect x="390" y="89" width="34" height="334" rx="17" fill="#d5001c"/>
+</svg>

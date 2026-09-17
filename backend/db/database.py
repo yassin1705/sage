@@ -57,6 +57,18 @@ class Database:
                 connection.execute("ALTER TABLE conversations ADD COLUMN delivery_email TEXT")
             if "email_consent_at" not in conversation_columns:
                 connection.execute("ALTER TABLE conversations ADD COLUMN email_consent_at TEXT")
+            service_job_columns = {
+                row["name"]
+                for row in connection.execute("PRAGMA table_info(service_jobs)").fetchall()
+            }
+            if "current_stage" not in service_job_columns:
+                connection.execute("ALTER TABLE service_jobs ADD COLUMN current_stage TEXT")
+            if "current_owner_role" not in service_job_columns:
+                connection.execute("ALTER TABLE service_jobs ADD COLUMN current_owner_role TEXT")
+            if "version" not in service_job_columns:
+                connection.execute("ALTER TABLE service_jobs ADD COLUMN version INTEGER NOT NULL DEFAULT 1")
+            if "workflow_updated_at" not in service_job_columns:
+                connection.execute("ALTER TABLE service_jobs ADD COLUMN workflow_updated_at TEXT")
 
     def table_names(self) -> list[str]:
         with self.session() as connection:

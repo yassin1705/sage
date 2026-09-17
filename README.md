@@ -27,9 +27,10 @@ staff may repeat work or make a promise the dealership cannot keep.
 2. SAGE identifies the request and the relevant vehicle case.
 3. It gathers evidence from the available synthetic records.
 4. Deterministic rules detect missing or conflicting information.
-5. SAGE prepares a response and explains its recommendation.
-6. A manager approves, edits, or rejects the proposed response.
-7. The approved response is returned to the customer through a simulated
+5. A role-controlled service workflow assigns the current stage and next owner.
+6. SAGE prepares a response and explains its recommendation.
+7. A manager approves, edits, or rejects the proposed response.
+8. The approved response is returned to the customer through a simulated
    delivery channel.
 
 ## Current features
@@ -50,14 +51,20 @@ staff may repeat work or make a promise the dealership cannot keep.
 - Predefined request classifications with manual correction.
 - Agent confidence, justification, and triggered business rules.
 - Evidence snapshots from workshop, CRM, and quality-control records.
+- Authoritative service stage, assigned role, and owned next action.
+- Role-authorized quality-control transition with an immutable event history.
+- Optimistic version checks that prevent simultaneous stage changes.
 - Editable proposed responses.
 - Simulated approval, rejection, and delivery workflow.
 - Simulated WhatsApp and Gmail configuration area.
+- Separate vehicle-workflow workspace with registration, job, and customer search.
+- Authoritative stage, assigned role, allowed actions, and immutable handoff history.
 
 ### Shared database
 
 - SQLite schema shared by both applications.
 - Customers, vehicles, service jobs, and source-specific status events.
+- Allowed workflow transitions and append-only stage-change events.
 - Conversations, messages, classifications, and decisions.
 - Evidence snapshots, human reviews, channel configuration, and audit events.
 - Repeatable synthetic C01 seed data.
@@ -144,10 +151,10 @@ Inspect the available review cases:
 python -m backend.db.inspect_database
 ```
 
-Run the focused database test:
+Run the focused database and workflow tests:
 
 ```bash
-python -m unittest backend.tests.test_database
+python -m unittest backend.tests.test_database backend.tests.test_workflow
 ```
 
 See [backend/README.md](backend/README.md) for database details.

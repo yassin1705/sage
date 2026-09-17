@@ -31,6 +31,14 @@ export type Inquiry = {
   rules: string[]
   evidence: EvidenceItem[]
   proposedResponse: string
+  nextAction: string
+  nextActionOwner: string
+  uncertainty: string
+  workflowStage: string
+  workflowOwner: string
+  workflowVersion: number
+  canCompleteQualityCheck: boolean
+  canResetWorkflowDemo: boolean
   deliveredAt?: string
   deliveryStatus?: string
 }
