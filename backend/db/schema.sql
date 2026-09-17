@@ -46,6 +46,8 @@ CREATE TABLE IF NOT EXISTS conversations (
         'OPEN', 'CHECKING_RECORDS', 'WAITING_HUMAN_REVIEW',
         'RESPONSE_APPROVED', 'RESOLVED'
     )),
+    delivery_email TEXT,
+    email_consent_at TEXT,
     opened_at TEXT NOT NULL,
     resolved_at TEXT
 );

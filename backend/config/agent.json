@@ -1,0 +1,7 @@
+{
+  "enabled": true,
+  "base_url": "http://127.0.0.1:11434",
+  "model": "qwen3:8b",
+  "timeout_seconds": 45,
+  "keep_alive": "30m"
+}

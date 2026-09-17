@@ -134,6 +134,8 @@
 .customer-request-block blockquote { margin: 11px 0 13px; font-size: 14px; line-height: 1.5; }
 .customer-context { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--manager-muted); font-size: 10px; }
 .customer-context span:last-child { display: flex; align-items: center; gap: 5px; }
+.customer-email { display: flex; align-items: center; gap: 6px; margin-top: 10px; padding-top: 10px; color: #536579; border-top: 1px solid var(--manager-soft-line); font-size: 9px; }
+.customer-email strong { overflow-wrap: anywhere; }
 
 .review-section { padding: 17px 0; border-bottom: 1px solid var(--manager-soft-line); }
 .section-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }

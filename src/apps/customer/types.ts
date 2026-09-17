@@ -9,6 +9,7 @@ export type ChatMessage = {
 export type CaseSummary = {
   reference: string
   vehicle: string
-  status: 'Identifying vehicle' | 'Checking records' | 'Waiting for adviser' | 'Answered'
+  status: 'Identifying vehicle' | 'Checking records' | 'Waiting for adviser' | 'Answered' | 'Response emailed' | 'Delivery failed'
   nextStep: string
+  deliveryEmail?: string
 }

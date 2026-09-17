@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   ArrowLeft,
   Bot,
@@ -68,6 +68,24 @@ export function ManagerApp() {
   const [accountLabel, setAccountLabel] = useState('')
   const [toast, setToast] = useState('')
 
+  async function refreshInquiries() {
+    try {
+      const response = await fetch('/api/manager/inquiries')
+      if (!response.ok) return
+      const data = await response.json() as Inquiry[]
+      setInquiries(data)
+      if (data.length) setSelectedId((current) => data.some((item) => item.id === current) ? current : data[0].id)
+    } catch {
+      // Keep the seeded frontend data visible if the API is not running yet.
+    }
+  }
+
+  useEffect(() => {
+    void refreshInquiries()
+    const poll = window.setInterval(() => void refreshInquiries(), 3000)
+    return () => window.clearInterval(poll)
+  }, [])
+
   const selected = inquiries.find((inquiry) => inquiry.id === selectedId) ?? inquiries[0]
   const filteredInquiries = useMemo(() => {
     const query = search.trim().toLowerCase()
@@ -94,14 +112,37 @@ export function ManagerApp() {
     window.setTimeout(() => setToast(''), 2800)
   }
 
-  function approveSelected() {
-    updateInquiry(selected.id, { status: 'sent', deliveredAt: 'Just now' })
-    showToast(`Response for ${selected.id} sent in simulation`)
+  async function approveSelected() {
+    try {
+      const response = await fetch(`/api/manager/reviews/${selected.id}/approve`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ final_response: selected.proposedResponse, classification: selected.classification }),
+      })
+      const result = await response.json() as { status?: string; mode?: string; detail?: string }
+      if (!response.ok) throw new Error(result.detail ?? 'The response could not be delivered')
+      await refreshInquiries()
+      showToast(result.mode === 'gmail_api'
+        ? `Response for ${selected.id} sent through Gmail`
+        : `Response for ${selected.id} delivered in simulation`)
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Delivery failed')
+    }
   }
 
-  function rejectSelected() {
-    updateInquiry(selected.id, { status: 'rejected' })
-    showToast(`${selected.id} returned for revision`)
+  async function rejectSelected() {
+    try {
+      const response = await fetch(`/api/manager/reviews/${selected.id}/reject`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ note: 'Manager rejected the proposed decision' }),
+      })
+      if (!response.ok) throw new Error('The review could not be rejected')
+      await refreshInquiries()
+      showToast(`${selected.id} returned for revision`)
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Review update failed')
+    }
   }
 
   function beginConfiguration(connector: Connector) {
@@ -263,6 +304,7 @@ function InquiryWorkspace(props: InquiryWorkspaceProps) {
                 <span><strong>{selected.customerId}</strong> · {selected.vehicle}</span>
                 <span><Languages size={14} />{selected.customerLanguage}</span>
               </div>
+              {selected.customerEmail && <div className="customer-email"><Mail size={14} />Approved response will be delivered to <strong>{selected.customerEmail}</strong></div>}
             </section>
 
             <section className="review-section classification-section">
@@ -301,14 +343,14 @@ function InquiryWorkspace(props: InquiryWorkspaceProps) {
             <section className="review-section response-section">
               <div className="section-title"><div><MessageCircle size={16} /><h3>Proposed response</h3></div><span>Editable</span></div>
               <textarea value={selected.proposedResponse} onChange={(event) => onUpdate(selected.id, { proposedResponse: event.target.value })} rows={5} />
-              {selected.deliveredAt && <p className="delivery-note"><CheckCircle2 size={15} />Sent in simulation · {selected.deliveredAt}</p>}
+              {selected.deliveredAt && <p className="delivery-note"><CheckCircle2 size={15} />{selected.deliveryStatus === 'SENT' ? 'Sent through Gmail' : 'Delivered in simulation'} · {selected.deliveredAt}</p>}
             </section>
           </div>
 
           <footer className="review-actions">
             <button className="reject-action" type="button" onClick={onReject} disabled={selected.status === 'sent'}><X size={17} />Reject decision</button>
-            <button className="approve-action" type="button" onClick={onApprove} disabled={selected.status === 'sent'}><Check size={17} />Approve &amp; send</button>
-            <p>Sending is simulated. No real customer will be contacted.</p>
+            <button className="approve-action" type="button" onClick={onApprove} disabled={selected.status === 'sent'}><Check size={17} />Approve &amp; email</button>
+            <p>Delivery follows the backend Gmail configuration. The default mode is simulation.</p>
           </footer>
         </section>
       </div>

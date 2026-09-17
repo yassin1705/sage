@@ -77,8 +77,10 @@ Manager workspace ┘                       │
                                               └── Voice       (planned)
 ```
 
-The current frontends use local simulations. The SQLite data layer is complete;
-the shared API and model integration are the next implementation steps.
+The shared API connects both frontends to the SQLite workflow. Qwen performs
+classification and drafting through Ollama, with a deterministic fallback.
+Manager-approved responses are delivered through the configurable outbound
+Gmail adapter, which defaults to safe simulation mode.
 
 ## Technology
 
@@ -107,6 +109,14 @@ Start the development server:
 
 ```bash
 npm run dev
+```
+
+In a second terminal, start the backend API:
+
+```bash
+python -m venv .venv
+.venv/Scripts/python -m pip install -r backend/requirements.txt
+.venv/Scripts/python -m uvicorn backend.api.main:app --reload --port 8000
 ```
 
 Open:
@@ -151,9 +161,7 @@ confirmation.
 
 ## Roadmap
 
-- Expose the SQLite workflow through a shared API.
-- Connect both portals to live conversation and review state.
-- Integrate Qwen3 for classification, entity extraction, and response drafting.
+- Add deeper multilingual evaluation and response drafting.
 - Add deterministic decision rules and risk levels.
 - Add local speech-to-text and text-to-speech.
 - Introduce Gmail and WhatsApp adapters after the simulated workflow is stable.

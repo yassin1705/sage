@@ -18,6 +18,7 @@ export type Inquiry = {
   id: string
   customerId: string
   customerLanguage: string
+  customerEmail?: string
   channel: 'WhatsApp' | 'Gmail' | 'Phone note' | 'Web chat'
   receivedAt: string
   message: string
@@ -31,6 +32,7 @@ export type Inquiry = {
   evidence: EvidenceItem[]
   proposedResponse: string
   deliveredAt?: string
+  deliveryStatus?: string
 }
 
 export type Connector = {

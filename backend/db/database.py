@@ -49,6 +49,14 @@ class Database:
         schema = SCHEMA_PATH.read_text(encoding="utf-8")
         with self.transaction() as connection:
             connection.executescript(schema)
+            conversation_columns = {
+                row["name"]
+                for row in connection.execute("PRAGMA table_info(conversations)").fetchall()
+            }
+            if "delivery_email" not in conversation_columns:
+                connection.execute("ALTER TABLE conversations ADD COLUMN delivery_email TEXT")
+            if "email_consent_at" not in conversation_columns:
+                connection.execute("ALTER TABLE conversations ADD COLUMN email_consent_at TEXT")
 
     def table_names(self) -> list[str]:
         with self.session() as connection:
