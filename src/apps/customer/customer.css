@@ -350,3 +350,102 @@
   .brand > span:last-child { display: none; }
   .identity-fields { grid-template-columns: 1fr; }
 }
+
+/* Porsche-inspired refinement: restrained graphite, motorsport red, precision geometry. */
+.customer-app {
+  --ink: #111114;
+  --muted: #696a6f;
+  --line: #d0d0cd;
+  --soft-line: #e7e7e3;
+  --canvas: #ecece9;
+  --blue: #d5001c;
+  --blue-dark: #ad0017;
+  --blue-soft: #f9e8ea;
+  background: linear-gradient(135deg, rgba(255,255,255,.72), transparent 42%), var(--canvas);
+}
+
+.customer-header {
+  position: relative;
+  border-bottom-color: rgba(18,18,20,.16);
+}
+
+.customer-header::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, #d5001c 0 12%, #111114 12% 100%);
+}
+
+.brand strong {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  letter-spacing: .16em;
+}
+
+.language-picker,
+.voice-button,
+.identity-fields input,
+.quick-prompts button,
+.composer-box,
+.mic-button,
+.send-button { border-radius: 2px; }
+
+.chat-shell {
+  border-top: 3px solid #111114;
+  box-shadow: 0 22px 60px rgba(0,0,0,.08);
+}
+
+.chat-heading h1 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 21px;
+  letter-spacing: .015em;
+}
+
+.assistant-avatar {
+  border-radius: 2px;
+  box-shadow: inset 0 -2px 0 rgba(213,0,28,.18);
+}
+
+.message-avatar { border-radius: 2px; }
+
+.identity-fields input {
+  height: 38px;
+  transition: border-color 160ms, box-shadow 160ms;
+}
+
+.identity-fields input:focus {
+  outline: 0;
+  border-color: var(--ink);
+  box-shadow: inset 3px 0 var(--blue);
+}
+
+.message-bubble { border-radius: 2px 12px 12px 12px; }
+.message-row.customer .message-bubble { border-radius: 12px 12px 2px 12px; }
+
+.quick-prompts button {
+  color: #3e3e42;
+  background: #fff;
+  border-color: #cfcfcd;
+}
+
+.quick-prompts button:hover {
+  color: var(--blue);
+  border-color: var(--blue);
+  background: var(--blue-soft);
+}
+
+.composer-box:focus-within {
+  border-color: #29292d;
+  box-shadow: 0 0 0 3px rgba(213,0,28,.08);
+}
+
+.case-card h2 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 23px;
+  letter-spacing: .02em;
+}
+
+@media (max-width: 620px) {
+  .composer-box { border-radius: 2px; }
+}

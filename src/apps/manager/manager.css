@@ -416,3 +416,92 @@
   .connections-intro > span { width: fit-content; margin-top: 12px; white-space: normal; }
   .connector-grid { grid-template-columns: 1fr; }
 }
+
+/* Porsche-inspired refinement: cockpit clarity with precise, restrained surfaces. */
+.manager-app {
+  --manager-bg: #ecece9;
+  --manager-muted: #696a6f;
+  --manager-line: #d0d0cd;
+  background: linear-gradient(135deg, rgba(255,255,255,.62), transparent 38%), var(--manager-bg);
+}
+
+.manager-nav {
+  border-right: 1px solid #2d2d30;
+}
+
+.manager-brand strong {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  letter-spacing: .13em;
+}
+
+.manager-nav nav button { border-radius: 2px; }
+.manager-nav nav button:hover:not(:disabled),
+.manager-nav nav button.active {
+  color: #fff;
+  background: linear-gradient(90deg, rgba(213,0,28,.2), var(--manager-sidebar-soft));
+  box-shadow: inset 3px 0 #d5001c;
+}
+
+.manager-topbar { position: relative; }
+.manager-topbar::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, #d5001c 0 10%, #111114 10% 100%);
+}
+
+.manager-topbar h1,
+.review-detail-header h2,
+.connections-intro h2 {
+  font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: .015em;
+}
+
+.manager-topbar h1 { font-size: 25px; }
+.review-detail-header h2 { font-size: 20px; }
+.connections-intro h2 { font-size: 24px; }
+
+.manager-top-actions button,
+.manager-metrics > button { border-radius: 2px; }
+
+.manager-top-actions button {
+  color: #77777c;
+  background: #f4f4f2;
+}
+
+.manager-metrics > button:hover,
+.manager-metrics > button.selected {
+  border-color: #77777a;
+  box-shadow: inset 0 -3px #d5001c, 0 8px 26px rgba(0,0,0,.06);
+}
+
+.manager-metrics strong {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 23px;
+}
+
+.inquiry-rows > button:hover,
+.inquiry-rows > button.selected,
+.vehicle-results > button:hover,
+.vehicle-results > button.selected { background: #f7f7f4; }
+
+.vehicle-stage-track .active {
+  border-color: #d7a7ad;
+  background: #fff6f7;
+}
+
+.inquiry-toolbar label,
+.manager-select select,
+.response-section textarea,
+.vehicle-search-box label,
+.vehicle-search-box button,
+.available-transition button,
+.configure-button,
+.connector-form input,
+.connector-form button { border-radius: 2px; }
+
+.review-layout,
+.vehicle-workflow-layout,
+.connector-card { box-shadow: 0 18px 50px rgba(0,0,0,.055); }
