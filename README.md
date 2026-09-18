@@ -9,6 +9,12 @@ keeps a human manager in control of uncertain or high-impact answers.
 
 > AI prepares the answer. Evidence explains it. A human stays in control.
 
+## Project status
+
+SAGE is a hackathon prototype intended for local demonstrations and portfolio
+use. It is not production-ready and does not include authentication, production
+deployment configuration, or live dealership-system integrations.
+
 ## The problem
 
 Customers contact dealerships through WhatsApp, email, web chat, and phone
@@ -79,7 +85,7 @@ Manager workspace ┘                       │
                                          ├── Local language model
                                          └── Channel adapters
                                               ├── Simulator
-                                              ├── Gmail       (planned)
+                                              ├── Gmail       (optional)
                                               ├── WhatsApp    (planned)
                                               └── Voice       (planned)
 ```
@@ -96,7 +102,7 @@ Gmail adapter, which defaults to safe simulation mode.
 - Vite
 - Python
 - SQLite
-- Ollama with Qwen3 8B planned for local agent inference
+- Ollama with Qwen3 8B for optional local agent inference
 - Faster Whisper planned for local speech transcription
 
 ## Run the applications
@@ -161,17 +167,20 @@ See [backend/README.md](backend/README.md) for database details.
 
 ## Exercise boundary
 
-SAGE currently uses synthetic exercise data. WhatsApp, Gmail, booking, and voice
-integrations are simulated. No real customer is contacted, no real appointment
-is changed, and no simulated status should be treated as an official dealership
-confirmation.
+SAGE currently uses synthetic exercise data. WhatsApp, booking, and voice
+integrations are simulated. Gmail also defaults to safe simulation mode, though
+an optional API adapter is available for local demonstrations. No real customer
+is contacted or appointment changed unless an operator deliberately configures
+that adapter, and no simulated status should be treated as an official
+dealership confirmation.
 
 ## Roadmap
 
 - Add deeper multilingual evaluation and response drafting.
-- Add deterministic decision rules and risk levels.
+- Expand deterministic decision rules and risk levels.
 - Add local speech-to-text and text-to-speech.
-- Introduce Gmail and WhatsApp adapters after the simulated workflow is stable.
+- Add authentication and production deployment configuration.
+- Introduce a WhatsApp adapter after the simulated workflow is stable.
 
 ## License
 

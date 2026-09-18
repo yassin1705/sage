@@ -26,7 +26,7 @@ class WorkflowTransitionTest(unittest.TestCase):
             created = asyncio.run(service.create_customer_request(
                 customer_id="CUS-A",
                 registration="ABC-123",
-                delivery_email="yasmokh18@gmail.com",
+                delivery_email="customer@example.com",
                 consent=True,
                 language="English",
                 message="Can I collect my car today?",
